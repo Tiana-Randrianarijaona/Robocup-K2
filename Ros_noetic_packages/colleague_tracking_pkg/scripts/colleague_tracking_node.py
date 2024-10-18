@@ -23,7 +23,7 @@ class ColleagueTrackerNode():
         self.bridge = CvBridge()
         self.colleagueFinder = ColleagueFinder()  
         rospy.init_node('colleague_tracking_node')
-        image_topic = "usb_cam/image_raw"
+        image_topic = "image_raw"
         self.sub = rospy.Subscriber(image_topic, Image, self.image_callback) 
         self.pub = rospy.Publisher('/colleague_detection', Image, queue_size=1)           
         self.pubFloats = rospy.Publisher('/colleague_data', Float32MultiArray, queue_size=1)   
