@@ -8,6 +8,8 @@ class ColleagueFinder:
         # Initialize the AprilTags detector options
         self.options = apriltag.DetectorOptions(families="tag36h11")
         self.detector = apriltag.Detector(self.options)
+        self.central_area_threshold_x = 50  # Threshold for x-axis
+        self.central_area_threshold_y = 50  # Threshold for y-axis
 
     #This method is the callback function to be executed whenever the frame from the camera is received
     def callback(self, frame_from_camera, targetMarkerId):
@@ -70,5 +72,24 @@ class ColleagueFinder:
             # Display the marker ID next to the red dot
             cv2.putText(frame, f"ID: {marker.id}", (marker.cx - 10, marker.cy - 10),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+
+        # Create a blank image to represent the camera feed (for testing)
+        camera_width, camera_height = 640, 480
+        # frame = np.zeros((camera_height, camera_width, 3), dtype=np.uint8)
+
+        # Define the central area for the Aruco code (where the robot should stop)
+        center_x = camera_width // 2
+        center_y = camera_height // 2
+
+        # Define top-left and bottom-right points of the central region rectangle
+        top_left = (center_x - self.central_area_threshold_x, center_y - self.central_area_threshold_y)
+        bottom_right = (center_x + self.central_area_threshold_x, center_y + self.central_area_threshold_y)
+
+        # Draw the central area rectangle (where the Aruco code should be located)
+        cv2.rectangle(frame, top_left, bottom_right, (0, 255, 0), 2)
+
+        # Draw a circle where the Aruco code is currently detected
+        # cv2.circle(frame, (int(self.cx), int(self.cy)), 10, (0, 0, 255), -1)
+
         
         return frame
